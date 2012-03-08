@@ -1364,7 +1364,3 @@ class Filter {
     fn=f;
   }
 }
-class Test {
-  function go(){~/y/g.customReplace('xyz', a);}
-  function a(re){return 'a';}
-}
