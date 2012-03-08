@@ -1,6 +1,6 @@
 //
 // mdown -- A haxe port of Markdown.
-// 
+//
 // Based on the Showdown, Copyright (c) 2007 John Fraser.
 //   <http://www.attacklab.net/>
 //
@@ -30,7 +30,14 @@ class Markdown {
   var g_span_filters: FilterList;
   
   // main creates a Markdown instance
-  static function main () { instance = new Markdown(); }
+  static function initiate () { instance = new Markdown(); }
+  
+  // create a static function to convert to html
+  public static function convert (s:String)
+  {
+  	if (instance == null) initiate();
+  	return Markdown.instance.makeHtml(s);
+  }
   
   function init () {
   
@@ -61,7 +68,7 @@ class Markdown {
   
   
   // constructor
-  function new () { 
+  function new () {
     init();
   }
   
@@ -170,7 +177,7 @@ class Markdown {
     var text = replaceFn(
       text,
       ~/^[ ]{0,3}\[(.+)\]:[ \t]*\n?[ \t]*<?(\S+?)>?[ \t]*\n?[ \t]*(?:(\n*)["(](.+?)[")][ \t]*)?(?:\n+)/m,
-      stripLinkDefs_cb 
+      stripLinkDefs_cb
     );
 
     return text;
@@ -265,7 +272,7 @@ class Markdown {
         [ ]{0,3}
         (<(hr)        // start tag = $2
         \b          // word break
-        ([^<>])*?      // 
+        ([^<>])*?      //
         \/?>)        // the matching end tag
         [ \t]*
         (?=\n{2,})      // followed by a blank line
@@ -403,9 +410,9 @@ class Markdown {
   // don't conflict with their use in Markdown for code, italics and strong.
   //
 
-    // Build a regex to find HTML tags and comments.  See Friedl's 
+    // Build a regex to find HTML tags and comments.  See Friedl's
     // "Mastering Regular Expressions", 2nd Ed., pp. 200-201.
-    var regex = ~/(<[a-z\/!$]("[^"]*"|\'[^\']*\'|[^\'">])*>|<!(--.*?--\s*)+>)/i;
+    var regex = ~/(<[a-z\/!$]("[^"]*"|'[^']*'|[^'">])*>|<!(--.*?--\s*)+>)/i;
 
     text = replaceFn(text, regex, escapeSpecialInAttributes_cb);
 
@@ -481,7 +488,7 @@ class Markdown {
       )
       /g,writeAnchorTag);
     */
-    text = replaceFn(text,~/(\[((?:\[[^\]]*\]|[^\[\]])*)\]\([ \t]*()<?(.*?)>?[ \t]*(([\'"])(.*?)\6[ \t]*)?\))/,writeAnchorTag);
+    text = replaceFn(text,~/(\[((?:\[[^\]]*\]|[^\[\]])*)\]\([ \t]*()<?(.*?)>?[ \t]*((['"])(.*?)\6[ \t]*)?\))/,writeAnchorTag);
 
     //
     // Last, handle reference-style shortcuts: [link text]
@@ -602,7 +609,7 @@ class Markdown {
       )
       /g,writeImageTag);
     */
-    text = replaceFn(text,~/(!\[(.*?)\]\s?\([ \t]*()<?(\S+?)>?[ \t]*(([\'"])(.*?)\6[ \t]*)?\))/,writeImageTag);
+    text = replaceFn(text,~/(!\[(.*?)\]\s?\([ \t]*()<?(\S+?)>?[ \t]*((['"])(.*?)\6[ \t]*)?\))/,writeImageTag);
 
     return text;
   }
@@ -683,7 +690,7 @@ class Markdown {
       /gm, function() {...});
     */
 
-    text = replaceFn(text, ~/^(\#{1,6})[ \t]*(.+?)[ \t]*\#*\n+/m, doHeaders_atx_cb);
+    text = replaceFn(text, ~/^(#{1,6})[ \t]*(.+?)[ \t]*#*\n+/m, doHeaders_atx_cb);
 
     return text;
   }
@@ -910,7 +917,7 @@ class Markdown {
   function doCodeSpans (text) {
   //
   //   *  Backtick quotes are used for <code></code> spans.
-  // 
+  //
   //   *  You can use multiple backticks as the delimiters if you want to
   //   include literal backticks in the code span. So, this input:
   //   
@@ -1141,7 +1148,7 @@ class Markdown {
 
   function doAutoLinks (text) {
 
-    text = replaceText(text,~/<((https?|ftp|dict):[^\'">\s]+)>/gi,"<a href=\"$1\">$1</a>");    
+    text = replaceText(text,~/<((https?|ftp|dict):[^'">\s]+)>/gi,"<a href=\"$1\">$1</a>");    
 
     // Email addresses: <address@domain.foo>
 
@@ -1157,7 +1164,7 @@ class Markdown {
         >
       /gi, doAutoLinks_callback());
     */
-    text = replaceFn(text, ~/<(?:mailto:)?([-.\w]+\@[-a-z0-9]+(\.[-a-z0-9]+)*\.[a-z]+)>/i, doAutoLinks_cb);
+    text = replaceFn(text, ~/<(?:mailto:)?([-.\w]+@[-a-z0-9]+(\.[-a-z0-9]+)*\.[a-z]+)>/i, doAutoLinks_cb);
 
     return text;
   }
@@ -1325,7 +1332,7 @@ class FilterList {
   public var filters:Array<Filter>;
   private var sorted:Bool;
   // constructor
-  public function new () { 
+  public function new () {
     filters=[];
   }
   public function add (p:Int, f:String->String) {
@@ -1338,8 +1345,8 @@ class FilterList {
       filters.sort(sort);
     }
     var end=filters.length;
-    for (i in 0...end) { 
-      text = filters[i].fn(text); 
+    for (i in 0...end) {
+      text = filters[i].fn(text);
     }
     return text;
   }
@@ -1352,7 +1359,7 @@ class Filter {
   public var priority:Int;
   public var fn:String->String;
   // constructor
-  public function new (p:Int, f:String->String) { 
+  public function new (p:Int, f:String->String) {
     priority=p;
     fn=f;
   }
@@ -1360,4 +1367,4 @@ class Filter {
 class Test {
   function go(){~/y/g.customReplace('xyz', a);}
   function a(re){return 'a';}
-}o
+}
