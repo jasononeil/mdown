@@ -1,0 +1,6 @@
+#The original SVN repo
+mdown-read-only
+
+# Editor files
+.*~
+*-sublime*
