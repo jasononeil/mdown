@@ -92,6 +92,14 @@ class ExampleTest
 		var result = Markdown.convert(str);
 		Assert.areEqual("<p>My sentance can be quite long.</p>\n\n<p>Second paragraph</p>", result);
 	}
+	
+	@Test
+	public function testBold():Void
+	{
+		var str = "I have some **bold** text.";
+		var result = Markdown.convert(str);
+		Assert.areEqual("<p>I have some <strong>bold</strong> text.</p>", result);
+	}
 
 
 
