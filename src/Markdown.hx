@@ -14,7 +14,7 @@
 //   var text = "Markdown *rocks*.";
 //   alert(mdown(text));
 //
-
+using StringTools;
 
 class Markdown {
     
@@ -1085,8 +1085,7 @@ class Markdown {
       }
       else if (~/\S/.match(str)) {
         str = runSpanGamut(str);
-        str = replaceText(str,~/^([ \t]*)/g,"<p>");
-        str += "</p>";
+        str = "<p>" + str.trim() + "</p>";
         grafsOut.push(str);
       }
 
