@@ -1085,7 +1085,11 @@ class Markdown {
       }
       else if (~/\S/.match(str)) {
         str = runSpanGamut(str);
+        // Remove leading whitespace and wrap with '<p>'
         str = "<p>" + str.trim() + "</p>";
+
+        // All new lines within this paragraph should be treated as spaces
+        str = str.replace('\n', ' ');
         grafsOut.push(str);
       }
 
