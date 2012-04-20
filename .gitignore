@@ -4,3 +4,7 @@ mdown-read-only
 # Editor files
 .*~
 *.sublime*
+
+# Generated files
+/build/
+/report/

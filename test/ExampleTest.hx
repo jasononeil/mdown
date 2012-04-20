@@ -1,8 +1,6 @@
 package;
 
-import massive.munit.util.Timer;
 import massive.munit.Assert;
-import massive.munit.async.AsyncFactory;
 
 /**
 * Auto generated ExampleTest for MassiveUnit. 
@@ -11,7 +9,6 @@ import massive.munit.async.AsyncFactory;
 */
 class ExampleTest 
 {
-	private var timer:Timer;
 	
 	public function new() 
 	{
@@ -40,31 +37,31 @@ class ExampleTest
 	
 	
 	@Test
-	public function testExample():Void
+	public function testH1():Void
 	{
-		Assert.isTrue(true);
+		var str = "My Title"
+		 + '\n' + "========";
+		var result = Markdown.convert(str);
+		Assert.areEqual("<h1>My Title</h1>", result);
 	}
 	
-	@AsyncTest
-	public function testAsyncExample(factory:AsyncFactory):Void
+	@Test
+	public function testH2():Void
 	{
-		var handler:Dynamic = factory.createHandler(this, onTestAsyncExampleComplete, 300);
-		timer = Timer.delay(handler, 200);
+		var str = "Sub Title"
+		 + '\n' + "---------";
+		var result = Markdown.convert(str);
+		Assert.areEqual("<h2>Sub Title</h2>", result);
 	}
 	
-	private function onTestAsyncExampleComplete():Void
+	@Test
+	public function testSingleLine():Void
 	{
-		Assert.isFalse(false);
+		var str = "My line.";
+		var result = Markdown.convert(str);
+		Assert.areEqual("<p>My line.</p>", result);
 	}
-	
-	
-	/**
-	* test that only runs when compiled with the -D testDebug flag
-	*/
-	@TestDebug
-	public function testExampleThatOnlyRunsWithDebugFlag():Void
-	{
-		Assert.isTrue(true);
-	}
+
+
 
 }
