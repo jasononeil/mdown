@@ -108,6 +108,14 @@ class ExampleTest
 		var result = Markdown.convert(str);
 		Assert.areEqual("<p>I have some <em>emphasised</em> text.</p>", result);
 	}
+	
+	@Test
+	public function testUnderlineEm():Void
+	{
+		var str = "I have some _underlined text_.";
+		var result = Markdown.convert(str);
+		Assert.areEqual("<p>I have some <em>underlined text</em>.</p>", result);
+	}
 
 
 
