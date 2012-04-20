@@ -100,6 +100,14 @@ class ExampleTest
 		var result = Markdown.convert(str);
 		Assert.areEqual("<p>I have some <strong>bold</strong> text.</p>", result);
 	}
+	
+	@Test
+	public function testItalics():Void
+	{
+		var str = "I have some *emphasised* text.";
+		var result = Markdown.convert(str);
+		Assert.areEqual("<p>I have some <em>emphasised</em> text.</p>", result);
+	}
 
 
 
