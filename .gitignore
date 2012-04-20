@@ -3,4 +3,4 @@ mdown-read-only
 
 # Editor files
 .*~
-*-sublime*
+*.sublime*
