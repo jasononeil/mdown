@@ -81,6 +81,17 @@ class ExampleTest
 		var result = Markdown.convert(str);
 		Assert.areEqual("<p>My sentance can be quite long.</p>\n\n<p>Second paragraph</p>", result);
 	}
+	
+	@Test
+	public function testMultipleParagraphsWithWhitespace():Void
+	{
+		var str = "My sentance can be"
+		 + "\n" + "quite long."
+		 + "\n" + " 	"
+		 + "\n" + "Second paragraph";
+		var result = Markdown.convert(str);
+		Assert.areEqual("<p>My sentance can be quite long.</p>\n\n<p>Second paragraph</p>", result);
+	}
 
 
 
