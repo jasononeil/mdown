@@ -116,6 +116,16 @@ class ExampleTest
 		var result = Markdown.convert(str);
 		Assert.areEqual("<p>I have some <em>underlined text</em>.</p>", result);
 	}
+	
+	@Test
+	public function testUL():Void
+	{
+		var str = "* One"
+		 + "\n" + "* Two"
+		 + "\n" + "* Three";
+		var result = Markdown.convert(str);
+		Assert.areEqual("<ul>\n<li>One</li>\n<li>Two</li>\n<li>Three</li>\n</ul>", result);
+	}
 
 
 
