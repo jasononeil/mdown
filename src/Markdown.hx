@@ -40,6 +40,7 @@ class Markdown {
   }
   
   function init () {
+    g_list_level = 0;
   
     g_block_filters=new FilterList();
     
