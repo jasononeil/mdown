@@ -1044,8 +1044,9 @@ class Markdown {
 
     bq = replaceText(bq,~/^[ \t]+$/gm,"");    // trim whitespace-only lines
     bq = runBlockGamut(bq);        // recurse
-    
-    bq = replaceText(bq,~/(^|\n)/g,"$1  ");
+
+    //bq = replaceText(bq,~/(^|\n)/g,"$1  ");
+    bq = replaceText(bq,~/(^.*)/gm,"  $1");
     // These leading spaces screw with <pre> content, so we need to fix that:
     bq = replaceFn(bq, ~/(\s*<pre>[^\r]+?<\/pre>)/m, doBlockQuotes_cb_cb);
     
