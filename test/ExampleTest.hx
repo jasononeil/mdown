@@ -35,7 +35,7 @@ class ExampleTest
 	{
 	}
 	
-	
+
 
 	@Test 
 	public function testInlineHTML():Void 
@@ -95,25 +95,7 @@ This is another regular paragraph.";
 		var result = Markdown.convert(str);
 		Assert.areEqual("<p>Jack &lt;3 <em>Jill</em></p>", result);
 	}
-	
-	@Test
-	public function testH1():Void
-	{
-		var str = "My Title"
-		 + '\n' + "========";
-		var result = Markdown.convert(str);
-		Assert.areEqual("<h1>My Title</h1>", result);
-	}
-	
-	@Test
-	public function testH2():Void
-	{
-		var str = "Sub Title"
-		 + '\n' + "---------";
-		var result = Markdown.convert(str);
-		Assert.areEqual("<h2>Sub Title</h2>", result);
-	}
-	
+
 	@Test
 	public function testSingleLine():Void
 	{
@@ -151,6 +133,24 @@ This is another regular paragraph.";
 		 + "\n" + "Second paragraph";
 		var result = Markdown.convert(str);
 		Assert.areEqual("<p>My sentance can be quite long.</p>\n\n<p>Second paragraph</p>", result);
+	}
+	
+	@Test
+	public function testH1():Void
+	{
+		var str = "My Title"
+		 + '\n' + "========";
+		var result = Markdown.convert(str);
+		Assert.areEqual("<h1>My Title</h1>", result);
+	}
+	
+	@Test
+	public function testH2():Void
+	{
+		var str = "Sub Title"
+		 + '\n' + "---------";
+		var result = Markdown.convert(str);
+		Assert.areEqual("<h2>Sub Title</h2>", result);
 	}
 	
 	@Test
