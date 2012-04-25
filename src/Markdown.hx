@@ -1046,7 +1046,8 @@ class Markdown {
     bq = runBlockGamut(bq);        // recurse
 
     //bq = replaceText(bq,~/(^|\n)/g,"$1  ");
-    bq = replaceText(bq,~/(^.*)/gm,"  $1");
+    bq = "  " + bq.replace("\n", "\n  ");
+    
     // These leading spaces screw with <pre> content, so we need to fix that:
     bq = replaceFn(bq, ~/(\s*<pre>[^\r]+?<\/pre>)/m, doBlockQuotes_cb_cb);
     
