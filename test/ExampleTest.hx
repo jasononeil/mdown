@@ -114,6 +114,15 @@ This is another regular paragraph.";
 	}
 	
 	@Test
+	public function testInsertLineBreak():Void
+	{
+		var str = "My sentance can be  "
+		 + "\n" + "quite long";
+		var result = Markdown.convert(str);
+		Assert.areEqual("<p>My sentance can be <br /> quite long</p>", result);
+	}
+	
+	@Test
 	public function testMultipleParagraphs():Void
 	{
 		var str = "My sentance can be"
