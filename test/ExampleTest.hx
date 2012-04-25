@@ -326,5 +326,37 @@ This is another regular paragraph.";
 <p>This is another regular paragraph.</p>";
 		Assert.areEqual(expectedResult, result);
 	}
+	
+	@Test
+	public function testAmpersand():Void
+	{
+		var str = "Jack & Jill";
+		var result = Markdown.convert(str);
+		Assert.areEqual("<p>Jack &amp; Jill</p>", result);
+	}
+	
+	@Test
+	public function testAmpersandShouldNotChange():Void
+	{
+		var str = "Jack & Jill &amp; Jason";
+		var result = Markdown.convert(str);
+		Assert.areEqual("<p>Jack &amp; Jill &amp; Jason</p>", result);
+	}
+	
+	@Test
+	public function testOpenBracket():Void
+	{
+		var str = "Jack <3 Jill";
+		var result = Markdown.convert(str);
+		Assert.areEqual("<p>Jack &lt;3 Jill</p>", result);
+	}
+	
+	@Test
+	public function testOpenBracketShouldNotChange():Void
+	{
+		var str = "Jack <3 <em>Jill</em>";
+		var result = Markdown.convert(str);
+		Assert.areEqual("<p>Jack &lt;3 <em>Jill</em></p>", result);
+	}
 
 }
