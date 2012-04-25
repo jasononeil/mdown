@@ -620,7 +620,7 @@ class Markdown {
     var alt_text: String   = re.matched(2);
     var link_id: String   = re.matched(3).toLowerCase();
     var url: String    = re.matched(4);
-    var title: String  = new String(re.matched(7));
+    var title: String  = re.matched(7);
     
     if (url == "") {
       if (link_id == "") {
@@ -648,6 +648,7 @@ class Markdown {
     // Replicate this bug.
 
     //if (title != "") {
+      if (title == null) title = "";
       title = replaceText(title, ~/"/g,"&quot;");
       title = escapeCharacters(title,"*_");
       result +=  " title=\"" + title + "\"";
