@@ -195,31 +195,100 @@ This is another regular paragraph.";
 		var result = Markdown.convert(str);
 		Assert.areEqual("<blockquote>\n  <p>This is a blockquote</p>\n</blockquote>", result);
 	}
-	
-	@Test
-	public function testBold():Void
+
+	@Test 
+	public function testBlockquoteMultiline():Void 
 	{
-		var str = "I have some **bold** text.";
+		var str = "> This is a blockquote"
+		 + "\n" + "> that spans multiple lines";
 		var result = Markdown.convert(str);
-		Assert.areEqual("<p>I have some <strong>bold</strong> text.</p>", result);
+		Assert.areEqual("<blockquote>\n  <p>This is a blockquote that spans multiple lines</p>\n</blockquote>", result);
 	}
-	
-	@Test
-	public function testItalics():Void
+
+	@Test 
+	public function testBlockquoteMultipleParagraphs():Void 
 	{
-		var str = "I have some *emphasised* text.";
+		var str = "> This is a blockquote"
+		 + "\n" + "> that spans multiple lines"
+		 + "\n" + "> "
+		 + "\n" + "> And paragraphs";
 		var result = Markdown.convert(str);
-		Assert.areEqual("<p>I have some <em>emphasised</em> text.</p>", result);
+		Assert.areEqual("<blockquote>\n  <p>This is a blockquote that spans multiple lines</p>\n  \n  <p>And paragraphs</p>\n</blockquote>", result);
 	}
-	
-	@Test
-	public function testUnderlineEm():Void
+
+	@Test 
+	public function testBlockquoteMultipleParagraphsLessIndenting():Void 
 	{
-		var str = "I have some _underlined text_.";
+		var str = "> This is a blockquote"
+		 + "\n" + "that spans multiple lines"
+		 + "\n" + ""
+		 + "\n" + "> And paragraphs";
 		var result = Markdown.convert(str);
-		Assert.areEqual("<p>I have some <em>underlined text</em>.</p>", result);
+		Assert.areEqual("<blockquote>\n  <p>This is a blockquote that spans multiple lines</p>\n  \n  <p>And paragraphs</p>\n</blockquote>", result);
 	}
-	
+
+	@Ignore("Simple test for breaking neko") @TestDebug @Test 
+	public function testNeko():Void 
+	{
+		var str = "> > This is nested blockquote. >";
+		var regex = ~/^[ \t]*>[ \t]?/gm;
+		var result = regex.replace(str, "~0");
+		Assert.areEqual("~0> This is nested blockquote. >", result);
+	}
+
+	@Test 
+	@Ignore("Failing on neko atm") 
+	public function testBlockquoteNested():Void 
+	{
+		var str = 
+"> This is the first level of quoting.
+>
+> > This is nested blockquote.
+>
+> Back to the first level.";
+		var result = Markdown.convert(str);
+		Assert.areEqual(
+"<blockquote>
+  <p>This is the first level of quoting.</p>
+  
+  <blockquote>
+    <p>This is nested blockquote.</p>
+  </blockquote>
+  
+  <p>Back to the first level.</p>
+</blockquote>", result);
+	}
+
+	@Test 
+	public function testBlockquoteOtherItems():Void 
+	{
+		var input = 
+"> ## This is a header.
+> 
+> 1.   This is the first list item.
+> 2.   This is the second list item.
+> 
+> Here's some example code:
+> 
+>     return shell_exec('echo $input | $markdown_script');";
+		var expected = 
+"<blockquote>
+  <h2>This is a header.</h2>
+  
+  <ol>
+  <li>This is the first list item.</li>
+  <li>This is the second list item.</li>
+  </ol>
+  
+  <p>Here's some example code:</p>
+
+<pre><code>return shell_exec('echo $input | $markdown_script');
+</code></pre>
+</blockquote>";
+		var result = Markdown.convert(input);
+		Assert.areEqual(expected, result);
+	}
+
 	@Test
 	public function testUL():Void
 	{
@@ -228,42 +297,6 @@ This is another regular paragraph.";
 		 + "\n" + "* Three";
 		var result = Markdown.convert(str);
 		Assert.areEqual("<ul>\n<li>One</li>\n<li>Two</li>\n<li>Three</li>\n</ul>", result);
-	}
-
-	@Test 
-	public function testULMultiline():Void 
-	{
-		var str = "* One"
-		 + "\n" + "  111"
-		 + "\n" + "* Two"
-		 + "\n" + "222"
-		 + "\n" + "* Three"
-		 + "\n" + "  333";
-		var result = Markdown.convert(str);
-		Assert.areEqual("<ul>\n<li>One\n111</li>\n<li>Two\n222</li>\n<li>Three\n333</li>\n</ul>", result);
-	}
-
-	@Test 
-	public function testULWithParagraphs():Void 
-	{
-		var str = "* One"
-		 + "\n" + "   111"
-		 + "\n"
-		 + "\n" + "* Two"
-		 + "\n"
-		 + "\n" + "   222";
-		var result = Markdown.convert(str);
-		Assert.areEqual("<ul>\n<li><p>One 111</p></li>\n<li><p>Two</p>\n\n<p>222</p></li>\n</ul>", result);
-	}
-
-	@Ignore("Failing. Non-blocking issue.") @Test 
-	public function testULWithGapsBetweenItems():Void 
-	{
-		var str = "* One"
-		 + "\n"
-		 + "\n" + "* Two";
-		var result = Markdown.convert(str);
-		Assert.areEqual("<ul>\n<li><p>One</p></li>\n<li><p>Two</p></li>\n</ul>", result);
 	}
 
 	@Test 
@@ -285,7 +318,16 @@ This is another regular paragraph.";
 		 + "\n" + "- Three";
 		var result = Markdown.convert(str);
 		Assert.areEqual("<ul>\n<li>One</li>\n<li>Two</li>\n<li>Three</li>\n</ul>", result);
+	}
 	
+	@Test
+	public function testOL():Void
+	{
+		var str = "1. One"
+		 + "\n" + "2. Two"
+		 + "\n" + "3. Three";
+		var result = Markdown.convert(str);
+		Assert.areEqual("<ol>\n<li>One</li>\n<li>Two</li>\n<li>Three</li>\n</ol>", result);
 	}
 
 	@Test 
@@ -296,6 +338,523 @@ This is another regular paragraph.";
 		 + "\n" + "  * Three";
 		var result = Markdown.convert(str);
 		Assert.areEqual("<ul>\n<li>One</li>\n<li>Two</li>\n<li>Three</li>\n</ul>", result);
+	}
+
+	@Test 
+	public function testOLWithSpacesBefore():Void 
+	{
+		var str = "  1. One"
+		 + "\n" + "  2. Two"
+		 + "\n" + "  3. Three";
+		var result = Markdown.convert(str);
+		Assert.areEqual("<ol>\n<li>One</li>\n<li>Two</li>\n<li>Three</li>\n</ol>", result);
+	}
+
+	@Test 
+	public function testOLOutOfOrder():Void 
+	{
+		var str = "1. One"
+		 + "\n" + "7. Two"
+		 + "\n" + "12. Three";
+		var result = Markdown.convert(str);
+		Assert.areEqual("<ol>\n<li>One</li>\n<li>Two</li>\n<li>Three</li>\n</ol>", result);
+	}
+	
+	@Test 
+	public function testULMultiline():Void 
+	{
+		var str = "* One"
+		 + "\n" + "  111"
+		 + "\n" + "* Two"
+		 + "\n" + "222"
+		 + "\n" + "* Three"
+		 + "\n" + "  333";
+		var result = Markdown.convert(str);
+		Assert.areEqual("<ul>\n<li>One\n111</li>\n<li>Two\n222</li>\n<li>Three\n333</li>\n</ul>", result);
+	}
+
+	@Test 
+	public function testOLMultiline():Void 
+	{
+		var str = "1. One"
+		 + "\n" + "   111"
+		 + "\n" + "2. Two"
+		 + "\n" + "222"
+		 + "\n" + "3. Three"
+		 + "\n" + "  333";
+		var result = Markdown.convert(str);
+		Assert.areEqual("<ol>\n<li>One\n111</li>\n<li>Two\n222</li>\n<li>Three\n333</li>\n</ol>", result);
+	}
+
+	@Ignore("Failing. Non-blocking issue.") @Test 
+	public function testULWithGapsBetweenItems():Void 
+	{
+		var str = "* One"
+		 + "\n"
+		 + "\n" + "* Two";
+		var result = Markdown.convert(str);
+		Assert.areEqual("<ul>\n<li><p>One</p></li>\n<li><p>Two</p></li>\n</ul>", result);
+	}
+
+	@Ignore("Failing.  Not important enough to stop atm.") @Test 
+	public function testOLWithGapsBetweenItems():Void 
+	{
+		var str = "1. One"
+		 + "\n"
+		 + "\n" + "2. Two";
+		var result = Markdown.convert(str);
+		Assert.areEqual("<ol>\n<li><p>One</p></li>\n<li><p>Two</p></li>\n</ol>", result);
+	}
+
+	@Test 
+	public function testULWithParagraphs():Void 
+	{
+		var str = "* One"
+		 + "\n" + "   111"
+		 + "\n"
+		 + "\n" + "* Two"
+		 + "\n"
+		 + "\n" + "   222";
+		var result = Markdown.convert(str);
+		Assert.areEqual("<ul>\n<li><p>One 111</p></li>\n<li><p>Two</p>\n\n<p>222</p></li>\n</ul>", result);
+	}
+
+	@Test 
+	public function testOLWithParagraphs():Void 
+	{
+		var str = "1. One"
+		 + "\n" + "   111"
+		 + "\n"
+		 + "\n" + "2. Two"
+		 + "\n"
+		 + "\n" + "   222";
+		var result = Markdown.convert(str);
+		Assert.areEqual("<ol>\n<li><p>One 111</p></li>\n<li><p>Two</p>\n\n<p>222</p></li>\n</ol>", result);
+	}
+
+	@Test 
+	public function testBlockquoteInsideList():Void 
+	{
+		var input = 
+"*   A list item with a blockquote:
+
+    > This is a blockquote
+    > inside a list item.";
+    	var expected = "<ul>
+<li><p>A list item with a blockquote:</p>
+
+<blockquote>
+  <p>This is a blockquote inside a list item.</p>
+</blockquote></li>
+</ul>";
+    	var result = Markdown.convert(input);
+    	Assert.areEqual(expected, result);
+	}
+
+	@Ignore("Not working in neko") @Test 
+	public function testCodeInsideList():Void 
+	{
+		var input = 
+"*   A list item with a code block:
+
+        var code;";
+    	var expected = "<ul>
+<li><p>A list item with a code block:</p>
+
+<pre><code>var code;\n</code></pre></li>
+</ul>";
+    	var result = Markdown.convert(input);
+    	Assert.areEqual(expected, result);
+	}
+
+	@Test 
+	public function testAvoidListCreation():Void 
+	{
+		var input = "1986\\. What a great season.";
+		var result = Markdown.convert(input);
+		Assert.areEqual("<p>1986. What a great season.</p>", result);
+	}
+
+	@Test 
+	public function testCode():Void
+	{
+		var input = "This is a normal paragraph:
+
+    This is a code block.";
+    	var expected = "<p>This is a normal paragraph:</p>
+
+<pre><code>This is a code block.
+</code></pre>";
+		var result = Markdown.convert(input);
+		Assert.areEqual(expected, result);
+	}
+
+	@Ignore("Indentation wrong in neko") @Test 
+	public function testCodeIndentation():Void
+	{
+		var input = "Here is an example of AppleScript:
+
+    tell application \"Foo\"
+        beep
+    end tell";
+    	var expected = "<p>Here is an example of AppleScript:</p>
+
+<pre><code>tell application \"Foo\"
+    beep
+end tell
+</code></pre>";
+		var result = Markdown.convert(input);
+		Assert.areEqual(expected, result);
+	}
+
+	@Test function testCodeConvertSpecialChars():Void 
+	{
+		var input = "    <div class=\"footer\">
+    &copy; 2004 Foo Corporation
+    </div>";
+    	var expected = "<pre><code>&lt;div class=\"footer\"&gt;
+&amp;copy; 2004 Foo Corporation
+&lt;/div&gt;
+</code></pre>";
+		var result = Markdown.convert(input);
+		Assert.areEqual(expected, result);
+	}
+
+	@Test function testHRDash():Void 
+	{
+		var input = "One
+
+---
+
+Two";
+		var expected = "<p>One</p>\n\n<hr />\n\n<p>Two</p>";
+		var result = Markdown.convert(input);
+		Assert.areEqual(expected, result);
+	}
+
+	@Test function testHRDashWithSpaces():Void 
+	{
+		var input = "One
+
+- - -
+
+Two";
+		var expected = "<p>One</p>\n\n<hr />\n\n<p>Two</p>";
+		var result = Markdown.convert(input);
+		Assert.areEqual(expected, result);
+	}
+
+	@Test function testHRDashMany():Void 
+	{
+		var input = "One
+
+-------------------
+
+Two";
+		var expected = "<p>One</p>\n\n<hr />\n\n<p>Two</p>";
+		var result = Markdown.convert(input);
+		Assert.areEqual(expected, result);
+	}
+
+	@Test function testHRAsterisk():Void 
+	{
+		var input = "One
+
+***
+
+Two";
+		var expected = "<p>One</p>\n\n<hr />\n\n<p>Two</p>";
+		var result = Markdown.convert(input);
+		Assert.areEqual(expected, result);
+	}
+
+	@Test function testHRAsteriskWithSpaces():Void 
+	{
+		var input = "One
+
+* * *
+
+Two";
+		var expected = "<p>One</p>\n\n<hr />\n\n<p>Two</p>";
+		var result = Markdown.convert(input);
+		Assert.areEqual(expected, result);
+	}
+
+	@Test function testHRAsteriskMany():Void 
+	{
+		var input = "One
+
+*********************
+
+Two";
+		var expected = "<p>One</p>\n\n<hr />\n\n<p>Two</p>";
+		var result = Markdown.convert(input);
+		Assert.areEqual(expected, result);
+	}
+
+	@Test function testHRUnderscord():Void 
+	{
+		var input = "One
+
+___
+
+Two";
+		var expected = "<p>One</p>\n\n<hr />\n\n<p>Two</p>";
+		var result = Markdown.convert(input);
+		Assert.areEqual(expected, result);
+	}
+
+	@Test function testHRUnderscordWithSpaces():Void 
+	{
+		var input = "One
+
+_ _ _
+
+Two";
+		var expected = "<p>One</p>\n\n<hr />\n\n<p>Two</p>";
+		var result = Markdown.convert(input);
+		Assert.areEqual(expected, result);
+	}
+
+	@Test function testHRUnderscordMany():Void 
+	{
+		var input = "One
+
+_____________________
+
+Two";
+		var expected = "<p>One</p>\n\n<hr />\n\n<p>Two</p>";
+		var result = Markdown.convert(input);
+		Assert.areEqual(expected, result);
+	}
+
+	@Test function testLinksInline():Void 
+	{
+		var input = 'This is [an example](http://example.com/ "Title") inline link.
+
+[This link](http://example.net/) has no title attribute.';
+		var expected = "<p>This is <a href=\"http://example.com/\" title=\"Title\">an example</a> inline link.</p>
+
+<p><a href=\"http://example.net/\">This link</a> has no title attribute.</p>";
+		var result = Markdown.convert(input);
+		Assert.areEqual(expected, result);
+	}
+
+	@Test function testLinksInlineRelative():Void 
+	{
+		var input = 'See my [About](/about/) page for details.   ';
+		var expected = "<p>See my <a href=\"/about/\">About</a> page for details.</p>";
+		var result = Markdown.convert(input);
+		Assert.areEqual(expected, result);
+	}
+
+	@Test function testReferenceLinks():Void 
+	{
+		var input = 
+'This is my [link one][one] link.
+
+This is my [link two][two] link.
+
+This is my [link three] [three] link.
+
+This is my [link four] [four] link.
+
+[one]: http://example.com/one
+[two]:  <http://example.com/two>  "LinkTwo, multiple spaces"
+   [three]:	http://example.com/three  (Link Three ref indented, tab)
+[four]: http://example.com/four  
+   "Link Four\'s title goes on another line"
+';
+		var expected = '<p>This is my <a href="http://example.com/one">link one</a> link.</p>
+
+<p>This is my <a href="http://example.com/two" title="LinkTwo, multiple spaces">link two</a> link.</p>
+
+<p>This is my <a href="http://example.com/three" title="Link Three ref indented, tab">link three</a> link.</p>
+
+<p>This is my <a href="http://example.com/four" title="Link Four\'s title goes on another line">link four</a> link.</p>';
+		var result = Markdown.convert(input);
+		Assert.areEqual(expected, result);
+	}
+
+	@Test 
+	public function testReferenceLinksImpliedName()
+	{
+
+		var input = 
+'Visit [Daring Fireball][] for more information.
+
+[Daring Fireball]: http://daringfireball.net/
+
+Other paragraph.
+';
+		var expected = '<p>Visit <a href="http://daringfireball.net/">Daring Fireball</a> for more information.</p>
+
+<p>Other paragraph.</p>';
+		var result = Markdown.convert(input);
+		Assert.areEqual(expected, result);
+	}
+
+	@Test
+	public function testBold():Void
+	{
+		var str = "I have some **bold** text.";
+		var result = Markdown.convert(str);
+		Assert.areEqual("<p>I have some <strong>bold</strong> text.</p>", result);
+	}
+	
+	@Test
+	public function testUnderlineBold():Void
+	{
+		var str = "I have some __underlined text__.";
+		var result = Markdown.convert(str);
+		Assert.areEqual("<p>I have some <strong>underlined text</strong>.</p>", result);
+	}
+
+	@Test 
+	public function testMidWordEmStrong():Void 
+	{
+		var str = "un*frigging*believable un**frigging**believable";
+		var result = Markdown.convert(str);
+		Assert.areEqual("<p>un<em>frigging</em>believable un<strong>frigging</strong>believable</p>", result);
+	}
+
+	@Test 
+	public function testAsteriskWithSpaces():Void 
+	{
+		var str = "un * frigging * believable";
+		var result = Markdown.convert(str);
+		Assert.areEqual("<p>un * frigging * believable</p>", result);
+	}
+
+	@Test 
+	public function testEscapedAsterisk():Void 
+	{
+		var str = "un\\*frigging\\*believable un\\*\\*frigging\\*\\*believable";
+		var result = Markdown.convert(str);
+		Assert.areEqual("<p>un*frigging*believable un**frigging**believable</p>", result);
+	}
+	
+	@Test
+	public function testItalics():Void
+	{
+		var str = "I have some *emphasised* text.";
+		var result = Markdown.convert(str);
+		Assert.areEqual("<p>I have some <em>emphasised</em> text.</p>", result);
+	}
+	
+	@Test
+	public function testUnderlineEm():Void
+	{
+		var str = "I have some _underlined text_.";
+		var result = Markdown.convert(str);
+		Assert.areEqual("<p>I have some <em>underlined text</em>.</p>", result);
+	}
+	
+	@Test
+	public function testInlineCode():Void
+	{
+		var str = "Use the `printf()` function.";
+		var result = Markdown.convert(str);
+		Assert.areEqual("<p>Use the <code>printf()</code> function.</p>", result);
+	}
+	
+	@Ignore("In neko the code has no spaces?!") @Test
+	public function testInlineCodeDouble():Void
+	{
+		var str = "``There is a literal backtick (`) here.``";
+		var result = Markdown.convert(str);
+		Assert.areEqual("<p><code>There is a literal backtick (`) here.</code></p>", result);
+	}
+	
+	@Test
+	public function testInlineCodeBacktickTest():Void
+	{
+		var str = "A single backtick in a code span: `` ` ``
+
+A backtick-delimited string in a code span: `` `foo` ``";
+		var result = Markdown.convert(str);
+		Assert.areEqual("<p>A single backtick in a code span: <code>`</code></p>
+
+<p>A backtick-delimited string in a code span: <code>`foo`</code></p>", result);
+	}
+	
+	@Test
+	public function testInlineCodeEncodingBrackets():Void
+	{
+		var str = "Please don't use any `<blink>` tags.";
+		var result = Markdown.convert(str);
+		Assert.areEqual("<p>Please don't use any <code>&lt;blink&gt;</code> tags.</p>", result);
+	}
+	
+	@Test
+	public function testInlineCodeEncodingAmpersands():Void
+	{
+		var str = "`&#8212;` is the decimal-encoded equivalent of `&mdash;`.";
+		var result = Markdown.convert(str);
+		Assert.areEqual("<p><code>&amp;#8212;</code> is the decimal-encoded equivalent of <code>&amp;mdash;</code>.</p>", result);
+	}
+	
+	@Test
+	public function inlineImage():Void
+	{
+		var str = "![Alt text](/path/to/img.jpg)";
+		var result = Markdown.convert(str);
+		Assert.areEqual("<p><img src=\"/path/to/img.jpg\" alt=\"Alt text\" title=\"\" /></p>", result);
+	}
+	
+	@Test
+	public function inlineImageWithTitle():Void
+	{
+		var str = "![Alt text](/path/to/img.jpg \"Optional title\")";
+		var result = Markdown.convert(str);
+		Assert.areEqual("<p><img src=\"/path/to/img.jpg\" alt=\"Alt text\" title=\"Optional title\" /></p>", result);
+	}
+
+	@Test function testReferenceImages():Void 
+	{
+		var input = 
+'This is my ![image one][one] image.
+
+This is my ![image two][two] image.
+
+This is my ![image three] [three] image.
+
+This is my ![image four] [four] image.
+
+[one]: url/to/image1
+[two]:  <url/to/image2>  "LinkTwo, multiple spaces"
+   [three]:	http://example.com/url/to/image3  (Link Three ref indented, tab)
+[four]: url/to/image4  
+   "Link Four\'s title goes on another line"
+';
+		var expected = '<p>This is my <img src="url/to/image1" alt="image one" title="" /> image.</p>
+
+<p>This is my <img src="url/to/image2" alt="image two" title="LinkTwo, multiple spaces" /> image.</p>
+
+<p>This is my <img src="http://example.com/url/to/image3" alt="image three" title="Link Three ref indented, tab" /> image.</p>
+
+<p>This is my <img src="url/to/image4" alt="image four" title="Link Four\'s title goes on another line" /> image.</p>';
+		var result = Markdown.convert(input);
+		Assert.areEqual(expected, result);
+	}
+
+	@Test 
+	public function testAutoLinkURL():Void 
+	{
+		var str = "<http://example.com/>";
+		var result = Markdown.convert(str);
+		Assert.areEqual('<p><a href="http://example.com/">http://example.com/</a></p>', result);
+	}
+
+	@Test 
+	public function testAutoLinkEmail():Void 
+	{
+		var str = "<address@example.com>";
+		var expected = '<p><a href="&#109;&#x61;&#105;&#x6C;&#116;&#111;:&#x61;&#x64;&#100;&#x72;&#101;&#115;&#x73;&#64;&#101;x&#97;&#x6D;&#112;&#x6C;&#x65;.&#99;&#x6F;&#109;">&#x61;&#x64;&#100;&#x72;&#101;&#115;&#x73;&#64;&#101;x&#97;&#x6D;&#112;&#x6C;&#x65;.&#99;&#x6F;&#109;</a></p>] was not equal to expected value [<p><a href="&#109;&#x61;&#105;&#x6C;&#116;&#111;:&#97;&#100;&#x64;&#114;&#x65;&#x73;&#115;&#x40;&#101;&#x78;&#x61;&#x6D;&#x70;&#x6C;e&#x2E;&#99;&#x6F;&#109;">&#97;&#100;&#x64;&#114;&#x65;&#x73;&#115;&#x40;&#101;&#x78;&#x61;&#x6D;&#x70;&#x6C;e&#x2E;&#99;&#x6F;&#109;</a></p>';
+
+		var result = Markdown.convert(str);
+		Assert.isTrue(result.indexOf('a href') > 0);
+		Assert.isFalse(result.indexOf('address@example.com') > 0);
 	}
 
 	@Test 
@@ -322,72 +881,6 @@ This is another regular paragraph.";
 		 + "\n" + "* Three";
 		var result = Markdown.convert(str);
 		Assert.areEqual("<ul>\n<li>One</li>\n<li>Two\n<ul><li>A</li>\n<li>B</li>\n<li>C</li></ul></li>\n<li>Three</li>\n</ul>", result);
-	}
-	
-	@Test
-	public function testOL():Void
-	{
-		var str = "1. One"
-		 + "\n" + "2. Two"
-		 + "\n" + "3. Three";
-		var result = Markdown.convert(str);
-		Assert.areEqual("<ol>\n<li>One</li>\n<li>Two</li>\n<li>Three</li>\n</ol>", result);
-	}
-
-	@Test 
-	public function testOLMultiline():Void 
-	{
-		var str = "1. One"
-		 + "\n" + "   111"
-		 + "\n" + "2. Two"
-		 + "\n" + "222"
-		 + "\n" + "3. Three"
-		 + "\n" + "  333";
-		var result = Markdown.convert(str);
-		Assert.areEqual("<ol>\n<li>One\n111</li>\n<li>Two\n222</li>\n<li>Three\n333</li>\n</ol>", result);
-	}
-
-	@Test 
-	public function testOLWithParagraphs():Void 
-	{
-		var str = "1. One"
-		 + "\n" + "   111"
-		 + "\n"
-		 + "\n" + "2. Two"
-		 + "\n"
-		 + "\n" + "   222";
-		var result = Markdown.convert(str);
-		Assert.areEqual("<ol>\n<li><p>One 111</p></li>\n<li><p>Two</p>\n\n<p>222</p></li>\n</ol>", result);
-	}
-
-	@Ignore("Failing.  Not important enough to stop atm.") @Test 
-	public function testOLWithGapsBetweenItems():Void 
-	{
-		var str = "1. One"
-		 + "\n"
-		 + "\n" + "2. Two";
-		var result = Markdown.convert(str);
-		Assert.areEqual("<ol>\n<li><p>One</p></li>\n<li><p>Two</p></li>\n</ol>", result);
-	}
-
-	@Test 
-	public function testOLOutOfOrder():Void 
-	{
-		var str = "1. One"
-		 + "\n" + "7. Two"
-		 + "\n" + "12. Three";
-		var result = Markdown.convert(str);
-		Assert.areEqual("<ol>\n<li>One</li>\n<li>Two</li>\n<li>Three</li>\n</ol>", result);
-	}
-
-	@Test 
-	public function testOLWithSpacesBefore():Void 
-	{
-		var str = "  1. One"
-		 + "\n" + "  2. Two"
-		 + "\n" + "  3. Three";
-		var result = Markdown.convert(str);
-		Assert.areEqual("<ol>\n<li>One</li>\n<li>Two</li>\n<li>Three</li>\n</ol>", result);
 	}
 
 	@Test 
