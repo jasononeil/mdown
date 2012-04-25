@@ -36,6 +36,66 @@ class ExampleTest
 	}
 	
 	
+
+	@Test 
+	public function testInlineHTML():Void 
+	{
+		var str =
+"This is a regular paragraph.
+
+<table>
+    <tr>
+        <td>Foo</td>
+    </tr>
+</table>
+
+This is another regular paragraph.";
+		var result = Markdown.convert(str);
+		var expectedResult = 
+"<p>This is a regular paragraph.</p>
+
+<table>
+    <tr>
+        <td>Foo</td>
+    </tr>
+</table>
+
+<p>This is another regular paragraph.</p>";
+		Assert.areEqual(expectedResult, result);
+	}
+	
+	@Test
+	public function testAmpersand():Void
+	{
+		var str = "Jack & Jill";
+		var result = Markdown.convert(str);
+		Assert.areEqual("<p>Jack &amp; Jill</p>", result);
+	}
+	
+	@Test
+	public function testAmpersandShouldNotChange():Void
+	{
+		var str = "Jack & Jill &amp; Jason";
+		var result = Markdown.convert(str);
+		Assert.areEqual("<p>Jack &amp; Jill &amp; Jason</p>", result);
+	}
+	
+	@Test
+	public function testOpenBracket():Void
+	{
+		var str = "Jack <3 Jill";
+		var result = Markdown.convert(str);
+		Assert.areEqual("<p>Jack &lt;3 Jill</p>", result);
+	}
+	
+	@Test
+	public function testOpenBracketShouldNotChange():Void
+	{
+		var str = "Jack <3 <em>Jill</em>";
+		var result = Markdown.convert(str);
+		Assert.areEqual("<p>Jack &lt;3 <em>Jill</em></p>", result);
+	}
+	
 	@Test
 	public function testH1():Void
 	{
@@ -298,65 +358,6 @@ class ExampleTest
 		 + "\n" + "3. Three";
 		var result = Markdown.convert(str);
 		Assert.areEqual("<ol>\n<li>One</li>\n<li>Two\n<ol><li>A</li>\n<li>B</li>\n<li>C</li></ol></li>\n<li>Three</li>\n</ol>", result);
-	}
-
-	@Test 
-	public function testInlineHTML():Void 
-	{
-		var str =
-"This is a regular paragraph.
-
-<table>
-    <tr>
-        <td>Foo</td>
-    </tr>
-</table>
-
-This is another regular paragraph.";
-		var result = Markdown.convert(str);
-		var expectedResult = 
-"<p>This is a regular paragraph.</p>
-
-<table>
-    <tr>
-        <td>Foo</td>
-    </tr>
-</table>
-
-<p>This is another regular paragraph.</p>";
-		Assert.areEqual(expectedResult, result);
-	}
-	
-	@Test
-	public function testAmpersand():Void
-	{
-		var str = "Jack & Jill";
-		var result = Markdown.convert(str);
-		Assert.areEqual("<p>Jack &amp; Jill</p>", result);
-	}
-	
-	@Test
-	public function testAmpersandShouldNotChange():Void
-	{
-		var str = "Jack & Jill &amp; Jason";
-		var result = Markdown.convert(str);
-		Assert.areEqual("<p>Jack &amp; Jill &amp; Jason</p>", result);
-	}
-	
-	@Test
-	public function testOpenBracket():Void
-	{
-		var str = "Jack <3 Jill";
-		var result = Markdown.convert(str);
-		Assert.areEqual("<p>Jack &lt;3 Jill</p>", result);
-	}
-	
-	@Test
-	public function testOpenBracketShouldNotChange():Void
-	{
-		var str = "Jack <3 <em>Jill</em>";
-		var result = Markdown.convert(str);
-		Assert.areEqual("<p>Jack &lt;3 <em>Jill</em></p>", result);
 	}
 
 }
