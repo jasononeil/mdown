@@ -3,11 +3,12 @@ package;
 import massive.munit.Assert;
 
 /**
-* Auto generated ExampleTest for MassiveUnit. 
-* This is an example test class can be used as a template for writing normal and async tests 
-* Refer to munit command line tool for more information (haxelib run munit)
+* These classes test Markdown.
+* I have tried to write a test for every piece of functionality mentioned
+* on this page: http://daringfireball.net/projects/markdown/syntax
+* Hopefully it's realtively comprehensive.
 */
-class ExampleTest 
+class MarkdownTest 
 {
 	
 	public function new() 
