@@ -163,6 +163,19 @@ This is another regular paragraph.";
 	}
 	
 	@Test
+	public function testSharpHeaders():Void
+	{
+		var str = "# H1"
+		 + '\n' + "## H2"
+		 + '\n' + "### H3"
+		 + '\n' + "#### H4"
+		 + '\n' + "##### H5"
+		 + '\n' + "###### H6";
+		var result = Markdown.convert(str);
+		Assert.areEqual("<h1>H1</h1>\n\n<h2>H2</h2>\n\n<h3>H3</h3>\n\n<h4>H4</h4>\n\n<h5>H5</h5>\n\n<h6>H6</h6>", result);
+	}
+	
+	@Test
 	public function testBold():Void
 	{
 		var str = "I have some **bold** text.";
