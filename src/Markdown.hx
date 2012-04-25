@@ -189,11 +189,11 @@ class Markdown {
     var m3 = re.matched(3);
     var m4 = re.matched(4);
     g_urls.set(m1, encodeAmpsAndAngles(re.matched(2)));  // Link IDs are case-insensitive
-    if (m3!='') {
+    if (m3 != null && m3!='') {
       // Oops, found blank lines, so it's not a title.
       // Put back the parenthetical statement we stole.
-      return m3+m4;
-    } else if (m4!='') {
+      return m3+(m4 != null ? m4 : "");
+    } else if (m4 != null && m4!='') {
       g_titles.set(m1, replaceText(m4, ~/"/g,"&quot;"));
     }
     
@@ -517,7 +517,7 @@ class Markdown {
     var link_text: String   = re.matched(2);
     var link_id: String   = re.matched(3).toLowerCase();
     var url: String    = re.matched(4);
-    var title: String  = new String(re.matched(7));
+    var title: String  = re.matched(7);
     
     if (url == "") {
       if (link_id == "") {
@@ -545,7 +545,7 @@ class Markdown {
     url = escapeCharacters(url,"*_");
     var result = "<a href=\"" + url + "\"";
     
-    if (title != "") {
+    if (title != null && title != "") {
       title = replaceText(title,~/"/g,"&quot;");
       title = escapeCharacters(title,"*_");
       result +=  " title=\"" + title + "\"";
