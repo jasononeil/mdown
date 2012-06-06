@@ -39,6 +39,22 @@ class MarkdownTest
 
 
 	@Test 
+	public function testNullInput():Void 
+	{
+		// Github Issue 2: https://github.com/jasononeil/mdown/issues/2
+		var result = Markdown.convert(null);
+		Assert.areEqual("", result);
+	}
+
+	@Test 
+	public function testEmptyInput():Void 
+	{
+		// Github Issue 2: https://github.com/jasononeil/mdown/issues/2
+		var result = Markdown.convert("");
+		Assert.areEqual("", result);
+	}
+
+	@Test 
 	public function testInlineHTML():Void 
 	{
 		var str =
@@ -896,11 +912,4 @@ This is my ![image four] [four] image.
 		var result = Markdown.convert(str);
 		Assert.areEqual("<ol>\n<li>One</li>\n<li>Two\n<ol><li>A</li>\n<li>B</li>\n<li>C</li></ol></li>\n<li>Three</li>\n</ol>", result);
 	}
-
-	@Test 
-	public function testNullInput():Void 
-	{
-		// Github Issue 2: https://github.com/jasononeil/mdown/issues/2
-		var result = Markdown.convert(null);
-		Assert.areEqual("", result);
-	}
+}
