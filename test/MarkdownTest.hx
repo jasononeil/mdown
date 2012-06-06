@@ -108,41 +108,41 @@ This is another regular paragraph.";
 	@Test
 	public function testMultipleLines():Void
 	{
-		var str = "My sentance can be"
+		var str = "My sentence can be"
 		 + "\n" + "quite long";
 		var result = Markdown.convert(str);
-		Assert.areEqual("<p>My sentance can be quite long</p>", result);
+		Assert.areEqual("<p>My sentence can be quite long</p>", result);
 	}
 	
 	@Test
 	public function testInsertLineBreak():Void
 	{
-		var str = "My sentance can be  "
+		var str = "My sentence can be  "
 		 + "\n" + "quite long";
 		var result = Markdown.convert(str);
-		Assert.areEqual("<p>My sentance can be <br /> quite long</p>", result);
+		Assert.areEqual("<p>My sentence can be <br /> quite long</p>", result);
 	}
 	
 	@Test
 	public function testMultipleParagraphs():Void
 	{
-		var str = "My sentance can be"
+		var str = "My sentence can be"
 		 + "\n" + "quite long."
 		 + "\n" + ""
 		 + "\n" + "Second paragraph";
 		var result = Markdown.convert(str);
-		Assert.areEqual("<p>My sentance can be quite long.</p>\n\n<p>Second paragraph</p>", result);
+		Assert.areEqual("<p>My sentence can be quite long.</p>\n\n<p>Second paragraph</p>", result);
 	}
 	
 	@Test
 	public function testMultipleParagraphsWithWhitespace():Void
 	{
-		var str = "My sentance can be"
+		var str = "My sentence can be"
 		 + "\n" + "quite long."
 		 + "\n" + " 	"
 		 + "\n" + "Second paragraph";
 		var result = Markdown.convert(str);
-		Assert.areEqual("<p>My sentance can be quite long.</p>\n\n<p>Second paragraph</p>", result);
+		Assert.areEqual("<p>My sentence can be quite long.</p>\n\n<p>Second paragraph</p>", result);
 	}
 	
 	@Test
