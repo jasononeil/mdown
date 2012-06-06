@@ -1,0 +1,13 @@
+<project name="mdown" url="https://github.com/jasononeil/mdown" license="BSD">
+	<user name="jason"/>
+	<tag v="cross" />
+	<tag v="markdown" />
+	<tag v="html" />
+	<tag v="text" />
+	<tag v="js" />
+	<tag v="php" />
+	<tag v="neko" />
+	<tag v="flash" />
+	<description>A markdown library for haxe, aims to be cross platform.  Use Markdown.convert(string); to get going.</description>
+	<version name="0.5.0.0">Initial haxelib.  Based on port that is relatively stable for JS and PHP.  Now also tested with Flash (working well) and Neko (mostly working).</version>
+</project>
