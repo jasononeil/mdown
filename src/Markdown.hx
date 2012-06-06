@@ -30,7 +30,7 @@ class Markdown {
   public static function convert (s:String)
   {
   	if (instance == null) initiate();
-  	return Markdown.instance.makeHtml(s);
+  	return (s != null) ? Markdown.instance.makeHtml(s) : "";
   }
   
   function init () {
