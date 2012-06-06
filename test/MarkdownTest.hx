@@ -904,15 +904,3 @@ This is my ![image four] [four] image.
 		var result = Markdown.convert(null);
 		Assert.areEqual("", result);
 	}
-
-	// @Test 
-	// public function testGithubIssue3():Void 
-	// {
-	// 	var str = "1. One"
-	// 	 + "\n"
-	// 	 + "\n" + "2. Two";
-	// 	var result = Markdown.convert(str);
-	// 	Assert.areEqual("<ol>\n<li><p>One</p></li>\n<li><p>Two</p></li>\n</ol>", result);
-	// }
-
-}
