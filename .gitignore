@@ -8,3 +8,4 @@ mdown-read-only
 # Generated files
 /build/
 /report/
+/package/
