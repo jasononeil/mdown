@@ -60,7 +60,7 @@ The main difference between this and the original "mdown" is that I am writing t
 TODO, Issues & Contributing
 ---------------------------
 
- * Stop ignoring testULWithParagraphs() and testOLWithParagraphs().  These tests are failing, and I am ignoring them for now.  
+ * Stop ignoring testULWithParagraphs() and testOLWithParagraphs().  These tests are failing, and I am ignoring them for now.
  * Test on CPP, PHP.
  * Make a haxelib command line tool to convert a static file.
 
