@@ -48,7 +48,7 @@ And you're set to go!
 Extensions
 ----------
 
-I have slightly restructured the project to allow you to insert Extensions into Markdown.  As a first example, I have added an extension which allows you to use Github style code blocks.  To use an extension in your code, you call `Markdown.setFilters()`.
+I have slightly restructured the project to allow you to insert Extensions into Markdown.  As a first example, I have added an extension which allows you to use [Github style code blocks](https://github.com/jasononeil/mdown/wiki/Github-Code-Blocks).  To use an extension in your code, you call `Markdown.setFilters()`.
 
 ```haxe
 import filters.GithubCodeBlocks;
@@ -63,7 +63,7 @@ Markdown.setFilters([GithubCodeBlocks, my.custom.MarkdownFilter]);
 Markdown.setFilters();
 ```
 
-If you would like to build your own extensions, or port extensions from other markdown libraries (it's not hard to convert them to Haxe), you can look at the filters/GithubCodeBlocks.hx file for an example of how it works, or ask on the Haxe mailing list and I'll try give some further instructions.  At some point I'll leave instructions on the wiki.
+If you would like to build your own extensions, or port extensions from other markdown libraries (it's not hard to convert them to Haxe), you can look at the [filters/GithubCodeBlocks.hx](https://github.com/jasononeil/mdown/blob/master/src/filters/GithubCodeBlocks.hx) file for an example of how it works, or ask on the [Haxe mailing list](https://groups.google.com/forum/?hl=en&fromgroups#!forum/haxelang) and I'll try give some further instructions.  At some point I'll leave instructions on the wiki.  If anyone makes a cool extension and wants it included I'll take pull requests!
 
 History
 -------
