@@ -997,5 +997,83 @@ Pretty **cool** hey!
 		Assert.areEqual(expected, result);
 	}
 
+	@Test 
+	public function testGithubCodeBlock_noLanguage():Void 
+	{
+		var input = 
+'```
+for (i in array)
+{
+	trace (i);
+}
+```';
+		var expected = '<pre><code class=\'\'>for (i in array)
+{
+    trace (i);
+}
+</code></pre>';
+		Markdown.setFilters(filters.GithubCodeBlocks);
+		var result = Markdown.convert(input);
+		Assert.areEqual(expected, result);
+	}
+
+	@Test
+	public function testGithubCodeBlock_markdownNotParse():Void 
+	{
+		var input = 
+'```
+In here this gh *code should* not become Markdown
+==============================================
+```
+
+And with an indented code block:
+
+	In here this *code should* not become Markdown
+	==============================================
+
+';
+		var expected = '<pre><code class=\'\'>In here this gh *code should* not become Markdown
+==============================================
+</code></pre>
+
+<p>And with an indented code block:</p>
+
+<pre><code>In here this *code should* not become Markdown
+==============================================
+</code></pre>';
+		Markdown.setFilters(filters.GithubCodeBlocks);
+		var result = Markdown.convert(input);
+		Assert.areEqual(expected, result);
+	}
+
+	@Test
+	public function testGithubCodeBlock_htmlEscaped():Void 
+	{
+		var input = 
+'```
+This is <b>Bold</b> and <i>Italic</i> and <script>Dangerous</script>
+====================================================================
+```
+
+And with an indented code block:
+
+	This is <b>Bold</b> and <i>Italic</i> and <script>Dangerous</script>
+	====================================================================
+
+';
+		var expected = '<pre><code class=\'\'>This is &lt;b&gt;Bold&lt;/b&gt; and &lt;i&gt;Italic&lt;/i&gt; and &lt;script&gt;Dangerous&lt;/script&gt;
+====================================================================
+</code></pre>
+
+<p>And with an indented code block:</p>
+
+<pre><code>This is &lt;b&gt;Bold&lt;/b&gt; and &lt;i&gt;Italic&lt;/i&gt; and &lt;script&gt;Dangerous&lt;/script&gt;
+====================================================================
+</code></pre>';
+		Markdown.setFilters(filters.GithubCodeBlocks);
+		var result = Markdown.convert(input);
+		Assert.areEqual(expected, result);
+	}
+
 
 }
