@@ -775,7 +775,7 @@ Other paragraph.
 		Assert.areEqual("<p>Use the <code>printf()</code> function.</p>", result);
 	}
 	
-	@Ignore("In neko the code has no spaces?!") @Test
+	@Test
 	public function testInlineCodeDouble():Void
 	{
 		var str = "``There is a literal backtick (`) here.``";

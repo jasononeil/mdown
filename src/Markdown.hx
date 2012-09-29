@@ -989,7 +989,7 @@ class Markdown
 
   function doCodeSpans_cb (re: EReg): String {
     var c = re.matched(3);
-    c = replaceText(c,~/^([ \t]*)/g,"");  // leading whitespace
+    c = replaceText(c,~/^([ \t])/g,"");  // leading whitespace
     c = replaceText(c,~/[ \t]*$/g,"");  // trailing whitespace
     c = encodeCode(c);
     return re.matched(1)+"<code>"+c+"</code>";
