@@ -912,4 +912,90 @@ This is my ![image four] [four] image.
 		var result = Markdown.convert(str);
 		Assert.areEqual("<ol>\n<li>One</li>\n<li>Two\n<ol><li>A</li>\n<li>B</li>\n<li>C</li></ol></li>\n<li>Three</li>\n</ol>", result);
 	}
+
+	@Test 
+	public function testExtensionAndReset():Void 
+	{
+		var input = 
+'My name is Jason
+=================
+
+And I have some code:
+
+```haxe
+for (i in array)
+{
+	trace (i);
+}
+```
+
+Pretty **cool** hey!
+';
+		var expected = '<h1>My name is Jason</h1>
+
+<p>And I have some code:</p>
+
+<pre><code class=\'haxe\'>for (i in array)
+{
+    trace (i);
+}
+</code></pre>
+
+<p>Pretty <strong>cool</strong> hey!</p>';
+		
+		// First result doesn't pass
+		var result1 = Markdown.convert(input);
+		Assert.areNotEqual(expected, result1);
+		
+		// Second result adds GithubCodeBlock - does pass
+		Markdown.setFilters(filters.GithubCodeBlocks);
+		var result2 = Markdown.convert(input);
+		Assert.areEqual(expected, result2);
+		
+		// Third result adds GithubCodeBlock as part of an array of extensions- does pass 
+		Markdown.setFilters([filters.GithubCodeBlocks]);
+		var result3 = Markdown.convert(input);
+		Assert.areEqual(expected, result3);
+		
+		// Fourth result resets Markdown to no extensions, doesn't pass
+		Markdown.setFilters([]);
+		var result4 = Markdown.convert(input);
+		Assert.areNotEqual(expected, result4);
+	}
+
+	@Test 
+	public function testGithubCodeBlock():Void 
+	{
+		var input = 
+'My name is Jason
+=================
+
+And I have some code:
+
+```haxe
+for (i in array)
+{
+	trace (i);
+}
+```
+
+Pretty **cool** hey!
+';
+		var expected = '<h1>My name is Jason</h1>
+
+<p>And I have some code:</p>
+
+<pre><code class=\'haxe\'>for (i in array)
+{
+    trace (i);
+}
+</code></pre>
+
+<p>Pretty <strong>cool</strong> hey!</p>';
+		Markdown.setFilters(filters.GithubCodeBlocks);
+		var result = Markdown.convert(input);
+		Assert.areEqual(expected, result);
+	}
+
+
 }

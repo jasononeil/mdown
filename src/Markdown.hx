@@ -8,11 +8,60 @@
 *   <http://daringfireball.net/projects/markdown/>
 ****/
 
+import MarkdownExtension;
 using StringTools;
 
-class Markdown {
-    
+class Markdown 
+{
+
+  //
+  // Public API (static only)
+  //
+  
+  // create a static function to convert to html
+  public static function convert (s:String)
+  {
+    if (instance == null) initiate();
+    return (s != null) ? Markdown.instance.makeHtml(s) : "";
+  }
+
+  public static function setFilters(?extension:Class<MarkdownExtension>, ?extensions:Array<Class<MarkdownExtension>>)
+  {
+    // re-initiate (or initiate if it hasn't yet), and this will re-set the filters
+    initiate();
+
+    // Combine the extensions into one group
+    if (extensions == null) { extensions = []; }
+    if (extension != null) { extensions.unshift(extension); }
+
+    // For each extension, add the filter
+    for (e in extensions)
+    {
+      // Set up the extension, pass the markdown instance
+      var ext:MarkdownExtension = Type.createInstance(e, []);
+      ext.inst = instance;
+
+      // Add the filter to the appropriate filter list
+      var filterList = (ext.type == MarkdownExtensionType.BLOCK) ? instance.g_block_filters : instance.g_span_filters;
+      filterList.add(ext.priority, ext.filter);
+    }
+  }
+
+  //
+  // Private everything else.
+  // Well, some of these methods are marked as public so that they are available to extensions,
+  // but the constructor is private and the objects can only be accessed through the static method
+  // or through the extension mechanism.
+  //
+  
+  // Set up an instance of the markdown object that our static method can use.
   static var instance:Markdown;
+  static function initiate () { instance = new Markdown(); }
+  
+  // private constructor - use the static methods instead
+  function new () {
+    init();
+  }
     
   // Global hashes, used by various utility routines
   var g_urls: Hash<String>;
@@ -22,16 +71,6 @@ class Markdown {
   // Global filter lists
   var g_block_filters: FilterList;
   var g_span_filters: FilterList;
-  
-  // main creates a Markdown instance
-  static function initiate () { instance = new Markdown(); }
-  
-  // create a static function to convert to html
-  public static function convert (s:String)
-  {
-  	if (instance == null) initiate();
-  	return (s != null) ? Markdown.instance.makeHtml(s) : "";
-  }
   
   function init () {
     g_list_level = 0;
@@ -59,12 +98,6 @@ class Markdown {
     g_span_filters.add(80, doItalicsAndBold);
     g_span_filters.add(90, doHardBreaks);
     
-  }
-  
-  
-  // constructor
-  function new () {
-    init();
   }
   
   //
@@ -140,7 +173,7 @@ class Markdown {
 
 
 
-  function stripLinkDefs (text) {
+  public function stripLinkDefs (text) {
   //
   // Strips link definitions from text, stores the URLs and titles in
   // hash references.
@@ -195,7 +228,7 @@ class Markdown {
     return "";
   }
 
-  function hashHTMLBlocks (text) {
+  public function hashHTMLBlocks (text) {
     // attacklab: Double up blank lines to reduce lookaround
     text = replaceText(text,~/\n/g,"\n\n");
 
@@ -319,7 +352,7 @@ class Markdown {
     return text;
   }
 
-  function hashElement (re: EReg): String {
+  public function hashElement (re: EReg): String {
     var blockText=re.matched(1);
     // Undo double lines
     blockText = replaceText(blockText,~/\n\n/g,"\n");
@@ -399,7 +432,7 @@ class Markdown {
     */
   }
 
-  function escapeSpecialInAttributes (text) {
+  public function escapeSpecialInAttributes (text) {
   //
   // Within tags -- meaning between < and > -- encode [\ ` * _] so they
   // don't conflict with their use in Markdown for code, italics and strong.
@@ -420,7 +453,7 @@ class Markdown {
     return tag;
   }
 
-  function doAnchors (text) {
+  public function doAnchors (text) {
   //
   // Turn Markdown link shortcuts into XHTML <a> tags.
   //
@@ -505,7 +538,7 @@ class Markdown {
     return text;
   }
 
-  function writeAnchorTag (re: EReg): String {
+  public function writeAnchorTag (re: EReg): String {
     // if (m7 == undefined) m7 = "";
     var whole_match: String = re.matched(1);
     var link_text: String   = re.matched(2);
@@ -551,7 +584,7 @@ class Markdown {
   }
 
 
-  function doImages (text) {
+  public function doImages (text) {
   //
   // Turn Markdown image shortcuts into <img> tags.
   //
@@ -609,7 +642,7 @@ class Markdown {
     return text;
   }
 
-  function writeImageTag (re: EReg): String {
+  public function writeImageTag (re: EReg): String {
     var whole_match: String = re.matched(1);
     var alt_text: String   = re.matched(2);
     var link_id: String   = re.matched(3).toLowerCase();
@@ -654,7 +687,7 @@ class Markdown {
   }
 
 
-  function doHeaders (text: String): String {
+  public function doHeaders (text: String): String {
     
     // Setext-style headers:
     //  Header 1
@@ -703,7 +736,7 @@ class Markdown {
   }
 
 
-  function doLists (text) {
+  public function doLists (text) {
   //
   // Form HTML ordered (numbered) and unordered (bulleted) lists.
   //
@@ -750,7 +783,7 @@ class Markdown {
     return text;
   }
   
-  function doHorizontalRules (text) {
+  public function doHorizontalRules (text) {
     var key = hashBlock("<hr />");
     text = replaceText(text,~/^[ ]{0,2}([ ]?\*[ ]?){3,}[ \t]*$/gm,key);
     text = replaceText(text,~/^[ ]{0,2}([ ]?-[ ]?){3,}[ \t]*$/gm,key);
@@ -758,7 +791,7 @@ class Markdown {
     return text;
   }
   
-  function doLists_outer_cb (re: EReg): String {
+  public function doLists_outer_cb (re: EReg): String {
     var list: String = re.matched(1);
     var list_type: String = (~/[*+-]/.match(re.matched(2))) ? "ul" : "ol";
 
@@ -776,7 +809,7 @@ class Markdown {
     return result;
   }
   
-  function doLists_inner_cb (re: EReg): String {
+  public function doLists_inner_cb (re: EReg): String {
     var runup = re.matched(1);
     var list = re.matched(2);
 
@@ -789,7 +822,7 @@ class Markdown {
     return result;
   }
 
-  function processListItems (list_str) {
+  public function processListItems (list_str) {
   //
   //  Process the contents of a single ordered or unordered list, splitting it
   //  into individual list items.
@@ -860,7 +893,7 @@ class Markdown {
     return  "<li>" + item + "</li>\n";
   }
 
-  function doCodeBlocks (text) {
+  public function doCodeBlocks (text) {
   //
   //  Process Markdown `<pre><code>` blocks.
   //  
@@ -903,14 +936,14 @@ class Markdown {
     return hashBlock(codeblock) + nextChar;
   }
 
-  function hashBlock (text) {
+  public function hashBlock (text) {
     text = replaceText(text,~/(^\n+|\n+$)/g,"");
     g_html_blocks.push(text);
     return "\n\n~K" + (g_html_blocks.length-1) + "K\n\n";
   }
 
 
-  function doCodeSpans (text) {
+  public function doCodeSpans (text) {
   //
   //   *  Backtick quotes are used for <code></code> spans.
   //
@@ -962,7 +995,7 @@ class Markdown {
     return re.matched(1)+"<code>"+c+"</code>";
   }
 
-  function encodeCode (text) {
+  public function encodeCode (text) {
   //
   // Encode/escape certain characters inside Markdown code runs.
   // The point is that in code, these characters are literals,
@@ -993,7 +1026,7 @@ class Markdown {
   }
 
 
-  function doItalicsAndBold (text) {
+  public function doItalicsAndBold (text) {
 
     // <strong> must go first:
     text = replaceText(text,~/(\*\*|__)(?=\S)([^\r]*?\S[\*_]*)\1/g,"<strong>$2</strong>");
@@ -1003,11 +1036,11 @@ class Markdown {
     return text;
   }
 
-  function doHardBreaks (text) {
+  public function doHardBreaks (text) {
     return replaceText(text,~/  +\n/g," <br />\n");
   }
     
-  function doBlockQuotes (text) {
+  public function doBlockQuotes (text) {
 
     /*
       text = replaceText(text,/
@@ -1057,7 +1090,7 @@ class Markdown {
     return pre;
   }
 
-  function formParagraphs (text) {
+  public function formParagraphs (text) {
   //
   //  Params:
   //    $text - string to process with html <p> tags
@@ -1111,7 +1144,7 @@ class Markdown {
   }
 
 
-  function encodeAmpsAndAngles (text) {
+  public function encodeAmpsAndAngles (text) {
   // Smart processing for ampersands and angle brackets that need to be encoded.
     
     // Ampersand-encoding based entirely on Nat Irons's Amputator MT plugin:
@@ -1125,7 +1158,7 @@ class Markdown {
   }
 
 
-  function encodeBackslashEscapes (text) {
+  public function encodeBackslashEscapes (text) {
   //
   //   Parameter:  String.
   //   Returns:  The string, with after processing the following backslash
@@ -1147,7 +1180,7 @@ class Markdown {
   }
 
 
-  function doAutoLinks (text) {
+  public function doAutoLinks (text) {
 
     text = replaceText(text,~/<((https?|ftp|dict):[^'">\s]+)>/gi,"<a href=\"$1\">$1</a>");    
 
@@ -1170,11 +1203,11 @@ class Markdown {
     return text;
   }
   
-  function doAutoLinks_cb (re) {
+  public function doAutoLinks_cb (re) {
     return encodeEmail( unescapeSpecial(re.matched(1)) );
   }
 
-  function encodeEmail (addr) {
+  public function encodeEmail (addr) {
   //
   //  Input: an email address, e.g. "foo@example.com"
   //
@@ -1232,7 +1265,7 @@ class Markdown {
     return ch;
   }
 
-  function unescapeSpecial (text) {
+  public function unescapeSpecial (text) {
   //
   // Swap back in all the special characters we've hidden.
   //
@@ -1245,7 +1278,7 @@ class Markdown {
     return  String.fromCharCode(charCodeToReplace);
   }
 
-  function outdent (text) {
+  public function outdent (text) {
   //
   // Remove one level of line-leading tabs or spaces
   //
@@ -1261,7 +1294,7 @@ class Markdown {
     return text;
   }
 
-  function detab (text) {
+  public function detab (text) {
   // attacklab: Detab's completely rewritten for speed.
   // In perl we could fix it by anchoring the regexp with \G.
   // In javascript we're less fortunate.
@@ -1296,7 +1329,7 @@ class Markdown {
   //  attacklab: Utility functions
   //
 
-  function escapeCharacters (text: String, charsToEscape: String, ?afterBackslash: Bool) {
+  public function escapeCharacters (text: String, charsToEscape: String, ?afterBackslash: Bool) {
     // First we have to escape the escape characters so that
     // we can build a character class out of them
     var regexString = "([" + replaceText(charsToEscape,~/([\[\]\\])/g,"\\$1") + "])";
@@ -1319,11 +1352,11 @@ class Markdown {
   //
   //  mdown: More utility functions
   //
-  function replaceText (orig: String, regex: EReg, replacement: String) {
+  public function replaceText (orig: String, regex: EReg, replacement: String) {
     return regex.replace(orig, replacement);
   }
   
-  function replaceFn (orig: String, regex: EReg, fn) {
+  public function replaceFn (orig: String, regex: EReg, fn) {
     return regex.customReplace(orig, fn);
   }
 
