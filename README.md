@@ -17,7 +17,7 @@ Usage
 
 There's really only one static function you need to know, Markdown.convert():
 
-~~~
+```haxe
 import Markdown;
 
 class Main
@@ -29,7 +29,7 @@ class Main
 		trace (output);
 	}
 }
-~~~
+```
 
 And then when you compile, remember to add the Markdown lib to your haxe project:
 
@@ -44,6 +44,26 @@ Or have a hxml file like this:
 ~~~
 
 And you're set to go!
+
+Extensions
+----------
+
+I have slightly restructured the project to allow you to insert Extensions into Markdown.  As a first example, I have added an extension which allows you to use Github style code blocks.  To use an extension in your code, you call `Markdown.setFilters()`.
+
+```haxe
+import filters.GithubCodeBlocks;
+
+// And then in your code, import a single filter
+Markdown.setFilters(GithubCodeBlocks);
+
+// Or multiple filters
+Markdown.setFilters([GithubCodeBlocks, my.custom.MarkdownFilter]);
+
+// Reset to the default filters
+Markdown.setFilters();
+```
+
+If you would like to build your own extensions, or port extensions from other markdown libraries (it's not hard to convert them to Haxe), you can look at the filters/GithubCodeBlocks.hx file for an example of how it works, or ask on the Haxe mailing list and I'll try give some further instructions.  At some point I'll leave instructions on the wiki.
 
 History
 -------
