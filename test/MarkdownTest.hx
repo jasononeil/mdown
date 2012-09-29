@@ -244,7 +244,7 @@ This is another regular paragraph.";
 		Assert.areEqual("<blockquote>\n  <p>This is a blockquote that spans multiple lines</p>\n  \n  <p>And paragraphs</p>\n</blockquote>", result);
 	}
 
-	@Ignore("Simple test for breaking neko") @TestDebug @Test 
+	@Ignore("Simple test for breaking neko and cpp") @TestDebug @Test 
 	public function testNeko():Void 
 	{
 		var str = "> > This is nested blockquote. >";
@@ -254,7 +254,7 @@ This is another regular paragraph.";
 	}
 
 	@Test 
-	@Ignore("Failing on neko atm") 
+	@Ignore("Failing on neko and CPP atm") 
 	public function testBlockquoteNested():Void 
 	{
 		var str = 
@@ -403,7 +403,7 @@ This is another regular paragraph.";
 		Assert.areEqual("<ol>\n<li>One\n111</li>\n<li>Two\n222</li>\n<li>Three\n333</li>\n</ol>", result);
 	}
 
-	@Ignore("Failing. Non-blocking issue.") @Test 
+	@Ignore("Failing all targets. Non-blocking issue.") @Test 
 	public function testULWithGapsBetweenItems():Void 
 	{
 		var str = "* One"
@@ -413,7 +413,7 @@ This is another regular paragraph.";
 		Assert.areEqual("<ul>\n<li><p>One</p></li>\n<li><p>Two</p></li>\n</ul>", result);
 	}
 
-	@Ignore("Failing.  Not important enough to stop atm.") @Test 
+	@Ignore("Failing all targets.  Not important enough to stop atm.") @Test 
 	public function testOLWithGapsBetweenItems():Void 
 	{
 		var str = "1. One"
@@ -468,7 +468,7 @@ This is another regular paragraph.";
     	Assert.areEqual(expected, result);
 	}
 
-	@Ignore("Not working in neko") @Test 
+	@Ignore("Not working in neko and CPP") @Test 
 	public function testCodeInsideList():Void 
 	{
 		var input = 
@@ -506,7 +506,7 @@ This is another regular paragraph.";
 		Assert.areEqual(expected, result);
 	}
 
-	@Ignore("Indentation wrong in neko") @Test 
+	@Ignore("Indentation wrong in neko and CPP") @Test 
 	public function testCodeIndentation():Void
 	{
 		var input = "Here is an example of AppleScript:
