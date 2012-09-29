@@ -9,6 +9,9 @@ import MarkdownExtension;
 *   puts "Hello, #{x}"
 * end
 * ```
+*
+* Borrowed heavily from Showdown, specifically looking at this pull request:
+* https://github.com/coreyti/showdown/pull/9/files
 */ 
 class GithubCodeBlocks implements MarkdownExtension
 {
