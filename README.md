@@ -7,6 +7,8 @@ If you don't know what Markdown is, it's a really easy way to write documents us
 
 If you don't know what haxe is, and you're a programmer, then you should.  It's a language that can target JS, PHP, CPP (and mobile!), C#, Java and Neko all from the same codebase.  This library is designed to work exactly the same no matter which platform you are targetting.  That is the genious of haxe.  See http://haxe.org/
 
+Currently this library has been tested and works on Neko, Flash9+, JS and CPP.
+
 Installation
 ------------
 
@@ -81,7 +83,7 @@ TODO, Issues & Contributing
 ---------------------------
 
  * Stop ignoring testULWithParagraphs() and testOLWithParagraphs().  These tests are failing, and I am ignoring them for now.
- * Test on CPP, PHP.
+ * Test on PHP, Java, C#
  * Make a haxelib command line tool to convert a static file.
 
  All contributions welcome.  I'm using github so it's relatively easy to make a copy, make some changes, and do a pull request.
