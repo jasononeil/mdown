@@ -1,6 +1,8 @@
 MDown
 =====
 
+**This library no longer works in Haxe 3.  Probably because it relies on such complex regular expressions, and something there changed, and they're damned hard to debug.  For Haxe 3, in likelihood, I'll put my love behind [David Peek's haxe-markdown library](https://github.com/dpeek/haxe-markdown).  If anyone wants to take over this library, feel free, but I think David's code base is a better base to work from.**
+
 This is a port of Markdown for haxe.  
 
 If you don't know what Markdown is, it's a really easy way to write documents using nothing but a text editor.  They look fine in normal text, but then you can convert it into pretty HTML with little effort.  See this link: http://daringfireball.net/projects/markdown/
